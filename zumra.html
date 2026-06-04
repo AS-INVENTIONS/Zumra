@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zumra Connect - SSF</title>
+    <style>
+        /* CSS Variables - For Smooth Dynamic Theme Transitions */
+        :root {
+            --primary-dark: #0f4c3a; 
+            --primary-light: #1b6b53;
+            --accent-gold: #c5a059; 
+            --bg-color: #f7f9f8;
+            --card-bg: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #ffffff;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            min-height: 100vh; 
+            overflow: hidden; 
+            transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+
+        /* WEB LAYOUT FIX: App-container now takes full width like a standard website */
+        #app-container {
+            width: 100%; 
+            max-width: 100%; /* Fully responsive full width */
+            height: 100vh; 
+            background-color: var(--bg-color);
+            position: relative; 
+            overflow-x: hidden; 
+            overflow-y: auto; 
+            transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Custom Scrollbar for Desktop */
+        #app-container::-webkit-scrollbar { width: 8px; }
+        #app-container::-webkit-scrollbar-track { background: var(--bg-color); }
+        #app-container::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 10px; }
+
+        @media (max-width: 768px) {
+            #app-container::-webkit-scrollbar { display: none; } /* Hide scrollbar on mobile */
+            #app-container { -ms-overflow-style: none; scrollbar-width: none; }
+        }
+
+        @media (min-width: 769px) {
+            .app-header { border-radius: 0; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; padding-bottom: 35px; }
+            .page-content { max-width: 1100px; margin: 0 auto; padding: 30px; } /* Centers content beautifully on large screens */
+        }
+
+        .page { display: none; padding-bottom: 30px; min-height: 100%; }
+        .page.active { display: block; animation: slideIn 0.4s ease-in-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        #splash-page {
+            height: 100%;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0c3b2e, #07261d);
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+        #splash-page.active { display: flex; } 
+
+        .app-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+            color: var(--accent-gold); padding: 35px 20px 25px; text-align: center;
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); position: relative;
+            transition: background 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .app-header h1 { font-size: 26px; margin-top: 10px; color: var(--text-light); letter-spacing: 1px; transition: color 0.5s; }
+        .bismillah { font-size: 28px; font-weight: normal; color: var(--accent-gold); font-family: serif; transition: color 0.5s, text-shadow 0.5s; }
+        
+        .ssf-subtitle {
+            font-size: 14px; margin-top: 8px; font-weight: 600; 
+            color: #d4af37; letter-spacing: 1.5px; text-transform: uppercase;
+            text-shadow: 0 0 5px rgba(212, 175, 55, 0.4);
+        }
+
+        .info-btn {
+            position: absolute; top: 25px; right: 20px; background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 16px; 
+            width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s ease;
+        }
+        .info-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.08); }
+
+        .back-btn { 
+            position: absolute; top: 25px; left: 15px; background: rgba(255,255,255,0.15); 
+            border: 1px solid rgba(255,255,255,0.2); color: white; font-size: 16px; 
+            width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.08); }
+
+        .page-content { padding: 25px; }
+        
+        /* GRID LAYOUT FOR DESKTOP */
+        .menu-container, #student-list, #admin-passwords-list, #leadership-list { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 15px; 
+            padding: 10px 0;
+        }
+        
+        #welcome-page .menu-container { padding: 0; margin-top: 15px; }
+
+        .menu-card {
+            background-color: var(--card-bg); border-left: 5px solid var(--accent-gold);
+            padding: 20px; border-radius: 12px; display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03); cursor: pointer; 
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.5s;
+        }
+        .menu-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.06); }
+        .menu-card:active { transform: scale(0.97); }
+        .menu-icon { font-size: 24px; background: #f0f4f2; padding: 12px; border-radius: 50%; color: var(--primary-dark); transition: color 0.5s; }
+        .menu-text { font-size: 17px; font-weight: 700; color: var(--primary-dark); flex: 1; transition: color 0.5s; }
+
+        .btn { padding: 12px 15px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; border-radius: 8px; color: white; width: 100%; transition: background 0.3s; }
+        .btn-primary { background-color: var(--primary-light); }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        .btn-gold { background-color: var(--accent-gold); color: var(--primary-dark); }
+        .btn-danger { background-color: #d9534f; }
+        
+        .student-card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); cursor: pointer; border-left: 4px solid var(--primary-light); height: fit-content; }
+        .student-header { display: flex; justify-content: space-between; align-items: center; }
+        .student-name-box { display: flex; align-items: center; gap: 10px; font-weight: 600; color: var(--text-dark); }
+        .student-details { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee; color: #666; font-size: 13px; line-height: 1.6; }
+        .student-card.expanded .student-details { display: block; animation: fadeIn 0.3s ease; }
+        
+        .score-badge { background: var(--accent-gold); color: var(--primary-dark); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; transition: background 0.5s, color 0.5s; }
+        .checkbox-container { width: 20px; height: 20px; accent-color: var(--primary-dark); display: none; }
+        .action-btns { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-small { padding: 8px 12px; font-size: 12px; border-radius: 6px; cursor: pointer; border: none; font-weight: bold; flex: 1; }
+
+        .secret-access-box { display: flex; gap: 10px; margin-bottom: 25px; width: 100%; max-width: 450px; margin-left: auto; margin-right: auto; }
+        .secret-access-box input { flex: 1; padding: 12px; text-align: center; font-size: 18px; letter-spacing: 2px; border: 1px solid #ddd; border-radius: 10px; outline: none; background: white; }
+        
+        .admin-controls { display: none; background: white; padding: 25px; border-radius: 15px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e0e5e2; }
+        .admin-section { padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px dashed #ccc; }
+        .admin-section h3 { color: var(--primary-dark); font-size: 16px; margin-bottom: 12px; }
+        .admin-section label { color:#ff8080; font-size:12px; display:block; margin-bottom:5px; }
+        .admin-section input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; background: white; }
+        
+        /* Dynamic Theme Overrides for Admins */
+        .theme-ultra { background-color: #120202 !important; }
+        .theme-ultra .app-header { background: linear-gradient(135deg, #4a0000, #7a0000) !important; border-bottom: 2px solid #ff3333; }
+        .theme-ultra .bismillah, .theme-ultra h1, .theme-ultra .ssf-subtitle { color: #ff4d4d !important; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
+
+        .theme-division { background-color: #0d0212 !important; }
+        .theme-division .app-header { background: linear-gradient(135deg, #2a004a, #4a007a) !important; border-bottom: 2px solid #b833ff; }
+        .theme-division .bismillah, .theme-division h1, .theme-division .ssf-subtitle { color: #e080ff !important; text-shadow: 0 0 8px rgba(184,51,255,0.6); }
+
+        .theme-sector { background-color: #020712 !important; }
+        .theme-sector .app-header { background: linear-gradient(135deg, #001f4a, #003a7a) !important; border-bottom: 2px solid #3385ff; }
+        .theme-sector .bismillah, .theme-sector h1, .theme-sector .ssf-subtitle { color: #80b3ff !important; text-shadow: 0 0 8px rgba(51,133,255,0.6); }
+
+        .dan-controls { display: none; background: #1a0507; padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid #ff3333; box-shadow: 0 0 20px rgba(255, 0, 0, 0.15); }
+        .dan-controls input { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid #ff4d4d; border-radius: 8px; background: #2b0808; color: white; outline: none; }
+        .warning-banner { background: repeating-linear-gradient(45deg, #660000, #660000 10px, #8b0000 10px, #8b0000 20px); color: white; font-weight: bold; text-align: center; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 13px; letter-spacing: 1px; border: 1px solid red;}
+
+        .leader-card { text-align: center; padding: 20px; border-radius: 15px; font-weight: bold; background: white; border: 1px solid #eee; height: fit-content; }
+        .rank-1 { border: 2px solid #FFD700; transform: scale(1.03); box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2); }
+        .rank-2 { border: 2px solid #C0C0C0; }
+        .rank-3 { border: 2px solid #cd7f32; }
+        .medal-icon { font-size: 35px; margin-bottom: 8px; }
+
+        /* DYNAMIC CERTIFICATE/AWARD STYLE FOR TOP PERFORMER */
+        #top-performer-box {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+            border: 2.5px solid var(--accent-gold);
+            border-radius: 16px;
+            padding: 25px 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1), 0 0 15px rgba(212,175,55,0.18);
+            text-align: center;
+            color: #ffffff;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* MODAL STYLES FOR INFO BUTTON */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #0c3b2e, #185e4a);
+            border: 2px solid #d4af37;
+            padding: 35px 25px 25px; border-radius: 20px;
+            width: 90%; max-width: 380px; text-align: center; position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 20px rgba(212, 175, 55, 0.35); 
+            animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: #ffffff;
+        }
+        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .close-modal {
+            position: absolute; top: 12px; right: 15px; background: rgba(255,255,255,0.15); border: none;
+            font-size: 18px; color: #d4af37; cursor: pointer; width: 30px; height: 30px; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.2s;
+        }
+        .close-modal:hover { background: rgba(255, 0, 0, 0.2); color: white; }
+        
+        .modal-ssf-badge {
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            color: #0c3b2e; padding: 8px 25px; 
+            border-radius: 30px; font-size: 18px; font-weight: 800; letter-spacing: 3px;
+            display: inline-block; margin-bottom: 20px;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+            border: 2px solid #ffffff;
+        }
+        
+        .sponsor-box { 
+            background: rgba(255, 255, 255, 0.04); 
+            border: 1px dashed rgba(212, 175, 55, 0.4); 
+            padding: 20px 15px; border-radius: 12px; margin-top: 15px; 
+        }
+        .sponsor-link {
+            color: #0c3b2e; text-decoration: none; font-weight: bold;
+            display: inline-flex; align-items: center; gap: 5px; margin-top: 12px;
+            background: #d4af37; padding: 8px 15px; border-radius: 8px; font-size: 14px;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.3); transition: 0.3s;
+        }
+        .sponsor-link:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.5); }
+
+        .bismillah-glow {
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.7), 0 0 20px rgba(212, 175, 55, 0.4);
+            animation: pulse-glow 2s infinite alternate;
+        }
+        @keyframes pulse-glow {
+            from { text-shadow: 0 0 8px rgba(212, 175, 55, 0.4), 0 0 15px rgba(212, 175, 55, 0.2); }
+            to { text-shadow: 0 0 15px rgba(212, 175, 55, 0.9), 0 0 30px rgba(212, 175, 55, 0.6); }
+        }
+
+        .sync-spinner { display: inline-block; font-size: 26px; animation: spin 1.2s linear infinite; margin-bottom: 12px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        @keyframes zoomIn { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* CUSTOM PDF CONTAINER STYLING */
+        .pdf-viewer-container {
+            background: white; border-radius: 15px; padding: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid var(--accent-gold);
+            max-width: 900px; margin: 0 auto;
+        }
+        .pdf-viewer-container iframe {
+            width: 100%; height: 60vh; min-height: 500px;
+            border: none; border-radius: 10px; background: #f0f4f2;
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+
+    <!-- 0. SPLASH SCREEN -->
+    <div id="splash-page" class="page active">
+        <div style="font-size: 50px; margin-bottom: 20px; animation: pulse-glow 2s infinite alternate; text-shadow: 0 0 15px rgba(212,175,55,0.6);">🌙</div>
+        <h1 style="font-family: 'Georgia', serif; font-size: 45px; font-weight: 800; color: #d4af37; letter-spacing: 5px; margin-bottom: 10px; text-transform: uppercase; text-shadow: 0 0 15px rgba(212,175,55,0.8); animation: zoomIn 1.5s ease-out, pulse-glow 2s infinite alternate;">ZUMRA</h1>
+        <p style="font-size: 15px; color: #a3c4bc; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; animation: fadeIn 2s ease-in;">Sunni Students Federation</p>
+    </div>
+
+    <!-- DYNAMIC SELECTION PAGE -->
+    <div id="selection-page" class="page">
+        <div class="app-header">
+            <button id="selection-back-btn" class="back-btn" onclick="navigateBack()" style="display: none;">⬅</button>
+            <button class="info-btn" onclick="openInfo()">❔</button>
+            <div class="bismillah">﷽</div>
+            <h1 id="selection-title">Zumra Connect</h1>
+            <p class="ssf-subtitle">Sunni Students Federation</p>
+        </div>
+
+        <div class="page-content">
+            
+            <div id="top-performer-box" style="display: none;">
+                <div style="font-size: 10px; text-transform: uppercase; color: var(--accent-gold); font-weight: bold; letter-spacing: 1px; margin-bottom: 8px;">🏆 SECTOR TOP PERFORMER</div>
+                <h2 id="top-perf-name" style="color: #ffffff; font-size: 22px; margin-bottom: 3px; font-weight: bold;">Name</h2>
+                <p id="top-perf-path" style="font-size: 12px; color: #dedede; margin-bottom: 15px;">Path</p>
+                <div id="top-perf-score" class="score-badge" style="display: inline-block; padding: 6px 15px; font-size: 14px;">0 Score</div>
+            </div>
+
+            <div class="secret-access-box" id="selectionSecretBox">
+                <input type="password" id="selectionKeyInput" placeholder="••••••••" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
+                <button class="btn btn-danger" onclick="verifySelectionAdmin()" style="width: 55px; border-radius: 10px;">🗝️</button>
+            </div>
+
+            <div id="selection-admin-controls" class="dan-controls">
+                <div class="warning-banner" id="admin-warning-banner">⚠️ ADMIN CONTROLS ⚠️</div>
+                <h3 id="admin-add-title">➕ Add New Item</h3>
+                <input type="text" id="adminInputName" placeholder="Name...">
+                <input type="password" id="adminInputPass" placeholder="Set Password..." style="display: none;" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
+                <button class="btn btn-super" onclick="addItem()" style="background:var(--primary-dark);">Add Item</button>
+                
+                <hr style="border:0; height:1px; background:rgba(255,0,0,0.3); margin:20px 0;">
+                <h3 style="color:#ff4d4d; margin-bottom:10px;">🔑 Password Manager</h3>
+                <div id="admin-passwords-list"></div>
+                
+                <button class="btn" style="background:#444; color:white; margin-top: 15px;" onclick="lockSelectionAdmin()">🔒 Lock Admin Panel</button>
+            </div>
+
+            <div id="selection-list" class="menu-container"></div>
+        </div>
+    </div>
+
+    <!-- 1. WELCOME PAGE (UNIT DASHBOARD) -->
+    <div id="welcome-page" class="page">
+        <div class="app-header">
+            <button class="back-btn" onclick="showPage('selection-page')">⬅</button>
+            <button class="info-btn" onclick="openInfo()">❔</button>
+            <div class="bismillah">﷽</div>
+            <h1 id="dashboard-unit-name">Unit Name</h1>
+            <p class="ssf-subtitle">Sunni Students Federation</p>
+        </div>
+
+        <div class="page-content">
+            <div id="dashboard-stats-container"></div>
+
+            <div class="menu-container">
+                <div class="menu-card" onclick="showPage('lessons-page')">
+                    <div class="menu-icon">📖</div>
+                    <div class="menu-text">My Lessons</div>
+                </div>
+                <div class="menu-card" onclick="showPage('attendance-page')">
+                    <div class="menu-icon">📝</div>
+                    <div class="menu-text">Members & Records</div>
+                </div>
+                <div class="menu-card" onclick="showPage('leadership-page')">
+                    <div class="menu-icon">🏆</div>
+                    <div class="menu-text">Leadership Board</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. LESSONS PAGE (UPDATED WITH PDF EMBED VIEWER) -->
+    <div id="lessons-page" class="page">
+        <div class="app-header">
+            <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
+            <h1>My Lessons</h1>
+            <p class="ssf-subtitle">Sunni Students Federation</p>
+        </div>
+        <div class="page-content">
+            
+            <div class="pdf-viewer-container">
+                <h3 style="color: var(--primary-dark); margin-bottom: 12px; text-align: center; font-size: 18px;">📚 Study Material</h3>
+                
+                <!-- 👇 PDF LINK HERE 👇: src="YOUR_PDF_LINK.pdf" എന്നാക്കുക -->
+                <iframe src="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" title="Lesson PDF"></iframe>
+                
+                <div style="text-align: center; margin-top: 15px;">
+                    <!-- 👇 DOWNLOAD LINK HERE 👇: href="YOUR_PDF_LINK.pdf" എന്നാക്കുക -->
+                    <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="btn btn-gold" style="display: inline-block; width: auto; text-decoration: none; padding: 10px 20px;">
+                        📥 Download / Open Fullscreen
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 3. ATTENDANCE & RECORDS PAGE -->
+    <div id="attendance-page" class="page">
+        <div class="app-header">
+            <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
+            <h1 id="page-title">Records</h1>
+            <p class="ssf-subtitle">Sunni Students Federation</p>
+        </div>
+        
+        <div class="page-content">
+            <div class="secret-access-box" id="unitSecretBox">
+                <input type="password" id="unitKeyInput" placeholder="••••••••" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
+                <button class="btn btn-primary" onclick="verifyUnitAdmin()" style="width: 55px; border-radius: 10px;">🗝️</button>
+            </div>
+
+            <div id="unit-admin-controls" class="admin-controls">
+                <div class="admin-section">
+                    <h3>✔️ Mark Today's Attendance</h3>
+                    <button class="btn btn-primary" onclick="submitAttendance()">Submit Attendance (+1)</button>
+                </div>
+                <div class="admin-section">
+                    <h3>➕ Add New Member</h3>
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                        <input type="text" id="newStudentName" placeholder="Enter Full Name...">
+                        <input type="text" id="newStudentDetails" placeholder="Enter Remarks/Details...">
+                        <button class="btn btn-gold" onclick="addStudent()">Add to Database</button>
+                    </div>
+                </div>
+                <div class="admin-section" style="border:none; padding:0; margin-bottom: 0;">
+                    <h3>⚙️ Settings</h3>
+                    <div style="display:flex; gap:10px;">
+                        <button class="btn" style="background: #444;" onclick="updateUnitPassword()">🔑 Password</button>
+                        <button class="btn btn-danger" onclick="lockUnitAdmin()">🔒 Lock System</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="student-list"></div>
+        </div>
+    </div>
+
+    <!-- 4. LEADERSHIP PAGE -->
+    <div id="leadership-page" class="page">
+        <div class="app-header">
+            <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
+            <h1>Leadership Board</h1>
+            <p class="ssf-subtitle">Sunni Students Federation</p>
+        </div>
+        <div class="page-content">
+            <div id="leadership-list"></div>
+        </div>
+    </div>
+
+    <!-- ℹ️ INFO MODAL -->
+    <div id="info-modal" class="modal-overlay" onclick="closeInfo()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-modal" onclick="closeInfo()">✕</button>
+            
+            <div class="modal-ssf-badge">SSF</div>
+            <h2 style="color: #ffffff; font-size: 22px; margin-bottom: 10px;">Zumra Connect</h2>
+            <p style="font-size: 13px; color: #a3c4bc;">Official Database Management</p>
+            
+            <div class="sponsor-box">
+                <p style="font-size: 13px; color: #e1ede6; margin-bottom: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">Developed & Sponsored By</p>
+                
+                <p style="font-size: 18px; font-weight: bold; color: var(--accent-gold); text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);">Hafiz Amanudeen Pallimukku</p>
+                <div style="margin: 8px 0; color: #fff; font-size: 12px; font-style: italic;">&amp;</div>
+                <p style="font-size: 18px; font-weight: bold; color: var(--accent-gold); text-shadow: 0 0 8px rgba(212, 175, 55, 0.4);">Amir Vadakkevila</p>
+                
+                <hr style="border:0; height:1px; background: rgba(212, 175, 55, 0.3); margin: 15px 0;">
+                
+                <p style="font-size: 11px; margin-top: 5px; color:#c7dcd0; text-transform: uppercase; letter-spacing: 2px;">Powered by</p>
+                <a href="https://github.com/AS-INVENTIONS" target="_blank" class="sponsor-link">
+                    🌐 AS-INVENTIONS
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- JAVASCRIPT LOGIC -->
+<script>
+    const API_URL = 'https://zumra-xnp0.onrender.com/api';
+
+    let currentLevel = 0; 
+    let isSelectionAdmin = false;
+    let isUnitAdmin = false;
+    
+    let selectedPath = {
+        division: { id: null, name: "" },
+        sector: { id: null, name: "" },
+        unit: { id: null, name: "" }
+    };
+    
+    let currentUnitId = null;
+    let currentUnitName = "";
+    let currentStudents = []; 
+
+    const PAGE_THEMES = {
+        'divisions-page': { primaryDark: "#0c3b2e", primaryLight: "#185e4a", accentGold: "#d4af37", bgColor: "#e6faf0", cardBg: "#ffffff", textDark: "#22332e" },
+        'sectors-page': { primaryDark: "#0c2340", primaryLight: "#1d3d73", accentGold: "#c0c0c0", bgColor: "#e6f0fa", cardBg: "#ffffff", textDark: "#112240" },
+        'units-page': { primaryDark: "#4a0e17", primaryLight: "#7a1c27", accentGold: "#e0a96d", bgColor: "#fae6eb", cardBg: "#ffffff", textDark: "#31080d" },
+        'welcome-page': { primaryDark: "#1a1c1e", primaryLight: "#2d3238", accentGold: "#e5c060", bgColor: "#f4f5f6", cardBg: "#ffffff", textDark: "#1a1c1e" },
+        'lessons-page': { primaryDark: "#1a1c1e", primaryLight: "#2d3238", accentGold: "#e5c060", bgColor: "#f4f5f6", cardBg: "#ffffff", textDark: "#1a1c1e" }
+    };
+
+    const ADMIN_THEMES = {
+        0: { primaryDark: "#3a0007", primaryLight: "#6a000f", accentGold: "#ff4d4d", bgColor: "#140204", cardBg: "#210508", textDark: "#fcd7da" },
+        1: { primaryDark: "#1e003a", primaryLight: "#3f0077", accentGold: "#be5eff", bgColor: "#0c0116", cardBg: "#17042a", textDark: "#f3e6ff" },
+        2: { primaryDark: "#00103a", primaryLight: "#002b77", accentGold: "#3385ff", bgColor: "#010616", cardBg: "#04122a", textDark: "#e6f0ff" }
+    };
+
+    function applyThemeVars(theme) {
+        const root = document.documentElement;
+        root.style.setProperty('--primary-dark', theme.primaryDark);
+        root.style.setProperty('--primary-light', theme.primaryLight);
+        root.style.setProperty('--accent-gold', theme.accentGold);
+        root.style.setProperty('--bg-color', theme.bgColor);
+        root.style.setProperty('--card-bg', theme.cardBg);
+        root.style.setProperty('--text-dark', theme.textDark);
+        document.body.style.backgroundColor = theme.bgColor;
+    }
+
+    function enterAppFromSplash() { showPage('selection-page'); }
+    function openInfo() { document.getElementById('info-modal').style.display = 'flex'; }
+    function closeInfo() { document.getElementById('info-modal').style.display = 'none'; }
+    function getUnitBaseURL() { return `${API_URL}/divisions/${selectedPath.division.id}/sectors/${selectedPath.sector.id}/units/${currentUnitId}`; }
+
+    function showLoader(elementId) {
+        document.getElementById(elementId).innerHTML = `
+            <div style="text-align:center; padding:45px; grid-column: 1 / -1; color:var(--primary-light);">
+                <span class="sync-spinner">⏳</span>
+                <span style="font-size:12px; font-weight:bold; letter-spacing:1px; color:#999; text-transform:uppercase; display:block;">syncing with cloud...</span>
+            </div>
+        `;
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        document.getElementById('app-container').scrollTo(0,0);
+
+        if(pageId === 'selection-page') {
+            loadSelectionPage();
+        } else if (pageId === 'splash-page') {
+            applyThemeVars({ primaryDark: "#0c3b2e", primaryLight: "#07261d", accentGold: "#d4af37", bgColor: "#07261d", cardBg: "#ffffff", textDark: "#ffffff" });
+        } else {
+            const theme = PAGE_THEMES[pageId] || PAGE_THEMES['welcome-page'];
+            applyThemeVars(theme);
+            
+            if(pageId === 'welcome-page') {
+                document.getElementById('dashboard-unit-name').innerText = currentUnitName || "Unknown Unit";
+                loadDashboardStats(); 
+            }
+            if(pageId === 'attendance-page') { updateUnitUI(); }
+            if(pageId === 'leadership-page') { renderLeadership(); }
+        }
+    }
+
+    function navigateBack() {
+        if (currentLevel === 1) {
+            currentLevel = 0;
+            isSelectionAdmin = false;
+            loadSelectionPage();
+        } else if (currentLevel === 2) {
+            currentLevel = 1;
+            isSelectionAdmin = false;
+            loadSelectionPage();
+        }
+    }
+
+    showPage('splash-page');
+    setTimeout(() => { enterAppFromSplash(); }, 2500);
+
+    async function loadSelectionPage() {
+        const titleEl = document.getElementById('selection-title');
+        const backBtn = document.getElementById('selection-back-btn');
+        const secretBox = document.getElementById('selectionSecretBox');
+        const adminControls = document.getElementById('selection-admin-controls');
+        const addPassInput = document.getElementById('adminInputPass');
+        const addNameInput = document.getElementById('adminInputName');
+        const bismillah = document.querySelector('#selection-page .bismillah');
+
+        document.getElementById('app-container').classList.remove('theme-ultra', 'theme-division', 'theme-sector');
+
+        if (!isSelectionAdmin) {
+            adminControls.style.display = 'none';
+            secretBox.style.display = 'flex';
+        } else {
+            secretBox.style.display = 'none';
+            adminControls.style.display = 'block';
+            if (currentLevel === 0) document.getElementById('app-container').classList.add('theme-ultra');
+            else if (currentLevel === 1) document.getElementById('app-container').classList.add('theme-division');
+            else if (currentLevel === 2) document.getElementById('app-container').classList.add('theme-sector');
+        }
+
+        if (currentLevel === 0) {
+            applyThemeVars(PAGE_THEMES['divisions-page']);
+            bismillah.classList.add('bismillah-glow'); 
+            titleEl.innerText = "Zumra Connect";
+            backBtn.style.display = 'none';
+            addPassInput.style.display = 'none'; 
+            addNameInput.placeholder = "Division Name (Eg: Kollam Division)";
+            document.getElementById('admin-warning-banner').innerText = "🚨 ULTRA DANGER ZONE 🚨";
+            document.getElementById('admin-add-title').innerText = "➕ Add New Division";
+        } else if (currentLevel === 1) {
+            applyThemeVars(PAGE_THEMES['sectors-page']);
+            bismillah.classList.remove('bismillah-glow'); 
+            titleEl.innerText = selectedPath.division.name;
+            backBtn.style.display = 'flex';
+            addPassInput.style.display = 'block';
+            addPassInput.placeholder = "Set Sector Password (Default: sec123)";
+            addNameInput.placeholder = "Sector Name (Eg: Vadakkevila Sector)";
+            document.getElementById('admin-warning-banner').innerText = "⚠️ DIVISION ADMIN : SECTOR MANAGEMENT ⚠️";
+            document.getElementById('admin-add-title').innerText = "➕ Add New Sector";
+        } else if (currentLevel === 2) {
+            applyThemeVars(PAGE_THEMES['units-page']);
+            bismillah.classList.remove('bismillah-glow'); 
+            titleEl.innerText = selectedPath.sector.name;
+            backBtn.style.display = 'flex';
+            addPassInput.style.display = 'block';
+            addPassInput.placeholder = "Set Unit Password (Default: 123)";
+            addNameInput.placeholder = "Unit Name (Eg: Unit 1)";
+            document.getElementById('admin-warning-banner').innerText = "⚠️ SECTOR ADMIN : UNIT MANAGEMENT ⚠️";
+            document.getElementById('admin-add-title').innerText = "➕ Add New Unit";
+        }
+
+        renderSelectionList();
+        updateTopPerformerUI(); 
+        if (isSelectionAdmin) loadPasswordManager();
+    }
+
+    async function updateTopPerformerUI() {
+        const box = document.getElementById('top-performer-box');
+        const nameEl = document.getElementById('top-perf-name');
+        const pathEl = document.getElementById('top-perf-path');
+        const scoreEl = document.getElementById('top-perf-score');
+        const badgeTitle = document.querySelector('#top-performer-box div');
+
+        if (isSelectionAdmin) { box.style.display = 'none'; return; }
+
+        let url = `${API_URL}/top-performer`;
+        if (currentLevel === 0) { badgeTitle.innerText = "🏆 GLOBAL TOP PERFORMER"; } 
+        else if (currentLevel === 1) { badgeTitle.innerText = "🏆 DIVISION TOP PERFORMER"; url = `${API_URL}/divisions/${selectedPath.division.id}/top-performer`; } 
+        else if (currentLevel === 2) { badgeTitle.innerText = "🏆 SECTOR TOP PERFORMER"; url = `${API_URL}/divisions/${selectedPath.division.id}/sectors/${selectedPath.sector.id}/top-performer`; }
+
+        try {
+            const res = await fetch(url);
+            const best = await res.json();
+            if (best && best.score > 0) {
+                box.style.display = 'block';
+                nameEl.innerText = best.name;
+                pathEl.innerText = best.path;
+                scoreEl.innerText = `⭐ ${best.score} Score`;
+            } else { box.style.display = 'none'; }
+        } catch (err) { box.style.display = 'none'; }
+    }
+
+    async function renderSelectionList() {
+        const list = document.getElementById('selection-list');
+        showLoader('selection-list');
+
+        let url = `${API_URL}/divisions`;
+        if (currentLevel === 1) url = `${API_URL}/divisions/${selectedPath.division.id}/sectors`;
+        else if (currentLevel === 2) url = `${API_URL}/divisions/${selectedPath.division.id}/sectors/${selectedPath.sector.id}/units`;
+
+        try {
+            const res = await fetch(url);
+            const items = await res.json();
+            list.innerHTML = "";
+
+            if (items.length === 0) {
+                list.innerHTML = `<p style="grid-column: 1 / -1; text-align:center; color:#888; font-size:15px; margin-top:20px;">No items found. Admin must add them.</p>`;
+                return;
+            }
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'menu-card';
+                const currentTheme = isSelectionAdmin ? ADMIN_THEMES[currentLevel] : PAGE_THEMES[currentLevel === 0 ? 'divisions-page' : currentLevel === 1 ? 'sectors-page' : 'units-page'];
+                card.style.borderLeft = `5px solid ${currentTheme.accentGold}`;
+                
+                let deleteBtn = isSelectionAdmin ? `<button class="btn-small" style="background:#ff3333; color:white; width:auto; padding:10px;" onclick="deleteItem('${item._id}', event)">🗑️ Delete</button>` : '';
+
+                card.onclick = () => handleItemClick(item._id, item.name);
+
+                card.innerHTML = `<div class="menu-icon">🕌</div><div class="menu-text">${item.name}</div>${deleteBtn}`;
+                list.appendChild(card);
+            });
+        } catch (err) {
+            list.innerHTML = `<p style="grid-column: 1 / -1; text-align:center; color:red; font-size:15px; margin-top:20px;">Error connecting to server.</p>`;
+        }
+    }
+
+    function handleItemClick(id, name) {
+        if (isSelectionAdmin) return; 
+
+        if (currentLevel === 0) { selectedPath.division = { id, name }; currentLevel = 1; loadSelectionPage(); } 
+        else if (currentLevel === 1) { selectedPath.sector = { id, name }; currentLevel = 2; loadSelectionPage(); } 
+        else if (currentLevel === 2) { selectedPath.unit = { id, name }; currentUnitId = id; currentUnitName = name; showPage('welcome-page'); }
+    }
+
+    async function verifySelectionAdmin() {
+        const key = document.getElementById('selectionKeyInput').value;
+        document.getElementById('selectionKeyInput').value = "";
+
+        if (currentLevel === 0) {
+            try {
+                const res = await fetch(`${API_URL}/ultra-verify`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key }) });
+                const data = await res.json();
+                if (data.success) { isSelectionAdmin = true; loadSelectionPage(); } else { alert("Access Denied! Incorrect Ultra Admin Key."); }
+            } catch (err) { alert("Error connecting to server."); }
+        } else if (currentLevel === 1) {
+            try {
+                const res = await fetch(`${API_URL}/divisions/${selectedPath.division.id}/verify`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key }) });
+                const data = await res.json();
+                if (data.success) { isSelectionAdmin = true; loadSelectionPage(); } else { alert("Access Denied! Incorrect Division Password."); }
+            } catch (err) { alert("Error connecting to server."); }
+        } else if (currentLevel === 2) {
+            try {
+                const res = await fetch(`${API_URL}/divisions/${selectedPath.division.id}/sectors/${selectedPath.sector.id}/verify`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key }) });
+                const data = await res.json();
+                if (data.success) { isSelectionAdmin = true; loadSelectionPage(); } else { alert("Access Denied! Incorrect Sector Password."); }
+            } catch (err) { alert("Error connecting to server."); }
+        }
+    }
+
+    function lockSelectionAdmin() { isSelectionAdmin = false; loadSelectionPage(); }
+
+    async function loadPasswordManager(children, type) {
+        const list = document.getElementById('admin-passwords-list');
+        list.innerHTML = `<p style="grid-column: 1/-1; color:#888; font-size:12px; text-align:center;">Loading Passwords...</p>`;
+
+        try {
+            if (currentLevel === 0) {
+                const res = await fetch(`${API_URL}/ultra/all-data`);
+                const data = await res.json();
+                children = data.divisions || [];
+                type = 'division';
+            } else if (currentLevel === 1 && !children) {
+                const allD = await (await fetch(`${API_URL}/ultra/all-data`)).json();
+                const div = allD.divisions.find(d => d._id === selectedPath.division.id);
+                children = div ? div.sectors : [];
+                type = 'sector';
+            } else if (currentLevel === 2 && !children) {
+                const allD = await (await fetch(`${API_URL}/ultra/all-data`)).json();
+                const div = allD.divisions.find(d => d._id === selectedPath.division.id);
+                const sec = div ? div.sectors.find(s => s._id === selectedPath.sector.id) : null;
+                children = sec ? sec.units : [];
+                type = 'unit';
+            }
+
+            list.innerHTML = "";
+            if (!children || children.length === 0) {
+                list.innerHTML = `<p style="grid-column: 1/-1; color:#888; font-size:12px; text-align:center;">No items found.</p>`;
+                return;
+            }
+
+            children.forEach(item => {
+                const row = document.createElement('div');
+                row.style.background = "#1a0202";
+                row.style.padding = "15px";
+                row.style.borderRadius = "10px";
+                row.style.border = "1px solid #440404";
+                row.innerHTML = `
+                    <label style="color:#ff8080; font-size:12px; font-weight:bold; display:block; margin-bottom: 8px;">${item.name}</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="password" id="pwd-input-${item._id}" placeholder="New Password..." style="flex:1; padding:10px; background:#110101; border:1px solid #ff4d4d; color:white; border-radius:5px;" autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
+                        <button class="btn-small btn-danger" onclick="updateItemPassword('${item._id}', '${type}')" style="flex:none; width:auto; padding:10px 15px; background:#ff3333;">Save</button>
+                    </div>
+                `;
+                list.appendChild(row);
+            });
+        } catch (err) {
+            list.innerHTML = `<p style="grid-column: 1/-1; color:red; font-size:12px; text-align:center;">Error loading passwords.</p>`;
+        }
+    }
+
+    async function updateItemPassword(itemId, type) {
+        const newPassword = document.getElementById(`pwd-input-${itemId}`).value.trim();
+        if (newPassword === "") return alert("Password cannot be empty.");
+
+        let url = "";
+        if (type === 'division') url = `${API_URL}/divisions/${itemId}/password`;
+        else if (type === 'sector') url = `${API_URL}/divisions/${selectedPath.division.id}/sectors/${itemId}/password`;
+        else if (type === 'unit') url = `${API_URL}/divisions/${selectedPath.division.id}/sectors/${selectedPath.sector.id}/units/${itemId}/password`;
+
+        try {
+            const res = await fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ newPassword }) });
+            if (res.ok) { alert("Password updated successfully!"); loadPasswordManager(); } 
+            else { alert("Failed to update password."); }
+        } catch (err) { alert("Error connecting to server."); }
+    }
+
+    async function addItem() {
+        const nameInput = document.getElementById('adminInputName');
+        const passInput = document.getElementById('adminInputPass');
+        const name = nameInput.value.trim();
+        let pass = passInput.value.trim();
+
+        if (name === "") return alert("Name is required!");
+
+        let url = `${API_URL}/divisions`; let payload = { name };
+        if (currentLevel === 1) { url = `${API_URL}/divisions/${selectedPath.division.id}/sectors`; payload.adminKey = pass || "sec123"; } 
+        else if (currentLevel === 2) { url = `${API_URL}/divisions/${selectedPath.division.id}/sectors/${selectedPath.sector.id}/units`; payload.adminKey = pass || "123"; }
+
+        try {
+            const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+            if (res.ok) { nameInput.value = ""; passInput.value = ""; renderSelectionList(); loadPasswordManager(); alert("Added successfully."); } 
+            else { alert("Failed to add."); }
+        } catch (err) { alert("Error connecting to server."); }
+    }
+
+    async function deleteItem(id, event) {
+        event.stopPropagation();
+        if (!confirm("Are you sure you want to delete this and all nested data?")) return;
+
+        let url = `${API_URL}/divisions/${id}`;
+        if (currentLevel === 1) url = `${API_URL}/divisions/${selectedPath.division.id}/sectors/${id}`;
+        else if (currentLevel === 2) url = `${API_URL}/divisions/${selectedPath.division.id}/sectors/${selectedPath.sector.id}/units/${id}`;
+
+        try {
+            const res = await fetch(url, { method: 'DELETE' });
+            if (res.ok) { renderSelectionList(); loadPasswordManager(); } 
+            else { alert("Failed to delete."); }
+        } catch (err) { alert("Error connecting to server."); }
+    }
+
+    async function loadDashboardStats() {
+        const statsContainer = document.getElementById('dashboard-stats-container');
+        statsContainer.innerHTML = `<p style="text-align:center; color:#999; font-size:12px; margin-bottom:15px;">loading stats...</p>`;
+
+        try {
+            const res = await fetch(`${getUnitBaseURL()}/students`);
+            const students = await res.json();
+            const totalMembers = students.length;
+            const topScore = students.length > 0 ? Math.max(...students.map(s => s.score)) : 0;
+            
+            if (totalMembers > 0) {
+                statsContainer.innerHTML = `
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:15px; margin-bottom:20px;">
+                        <div style="background:white; padding:20px; border-radius:12px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.04); border-bottom:4px solid var(--primary-light);">
+                            <span style="font-size:12px; color:#888; font-weight:bold; display:block; letter-spacing:1px;">TOTAL MEMBERS</span>
+                            <span style="font-size:28px; font-weight:bold; color:var(--primary-dark);">${totalMembers}</span>
+                        </div>
+                        <div style="background:white; padding:20px; border-radius:12px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.04); border-bottom:4px solid var(--accent-gold);">
+                            <span style="font-size:12px; color:#888; font-weight:bold; display:block; letter-spacing:1px;">TOP SCORE</span>
+                            <span style="font-size:28px; font-weight:bold; color:var(--primary-dark);">${topScore}</span>
+                        </div>
+                    </div>
+                `;
+            } else { statsContainer.innerHTML = ""; }
+        } catch (err) { statsContainer.innerHTML = ""; }
+    }
+
+    async function verifyUnitAdmin() {
+        let key = document.getElementById('unitKeyInput').value; document.getElementById('unitKeyInput').value = "";
+        try {
+            const res = await fetch(`${getUnitBaseURL()}/verify`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key }) });
+            const data = await res.json();
+            if (data.success) { isUnitAdmin = true; currentStudents = data.unit.students; updateUnitUI(); } 
+            else { alert("Access Denied! Incorrect Unit Password."); }
+        } catch (err) { alert("Error connecting to server."); }
+    }
+
+    function lockUnitAdmin() { isUnitAdmin = false; updateUnitUI(); alert("Unit System Locked."); }
+
+    async function updateUnitPassword() {
+        let newPass = prompt(`Enter new password:`);
+        if (newPass !== null && newPass.trim() !== "") {
+            try {
+                const res = await fetch(`${getUnitBaseURL()}/password`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ newPassword: newPass.trim() }) });
+                if (res.ok) alert("Password updated successfully!"); else alert("Failed to update password.");
+            } catch (err) { alert("Error connecting to server."); }
+        }
+    }
+
+    function updateUnitUI() {
+        let secretBox = document.getElementById('unitSecretBox');
+        let controls = document.getElementById('unit-admin-controls');
+        let title = document.getElementById('page-title');
+
+        if (isUnitAdmin) {
+            secretBox.style.display = 'none'; controls.style.display = 'block'; title.innerText = "Admin Portal"; renderStudents();
+        } else {
+            secretBox.style.display = 'flex'; controls.style.display = 'none'; title.innerText = "Members List"; loadStudents(); 
+        }
+    }
+
+    async function loadStudents() {
+        const list = document.getElementById('student-list');
+        showLoader('student-list');
+        try {
+            const res = await fetch(`${getUnitBaseURL()}/students`); currentStudents = await res.json(); renderStudents();
+        } catch (err) { list.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:red; font-size:15px;">Error loading data.</p>`; }
+    }
+
+    function renderStudents() {
+        const list = document.getElementById('student-list');
+        list.innerHTML = ""; 
+
+        if(currentStudents.length === 0) {
+            list.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#888; font-size:15px; margin-top:20px;">No members found. Admin must add members.</p>`;
+            return;
+        }
+
+        currentStudents.forEach(student => {
+            const card = document.createElement('div'); card.className = 'student-card';
+            card.onclick = () => card.classList.toggle('expanded');
+
+            let checkboxHTML = ""; let actionsHTML = "";
+            if (isUnitAdmin) {
+                checkboxHTML = `<input type="checkbox" class="checkbox-container att-checkbox" value="${student._id}" onclick="event.stopPropagation()" style="display:inline-block;">`;
+                actionsHTML = `
+                    <div class="action-btns">
+                        <button class="btn-small" style="background:#e0e5e2; color:#333;" onclick="editStudent('${student._id}', event)">✏️ Edit</button>
+                        <button class="btn-small btn-danger" onclick="deleteStudent('${student._id}', event)">🗑️ Delete</button>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="student-header">
+                    <div class="student-name-box">${checkboxHTML} ${student.name}</div>
+                    <span class="score-badge">⭐ ${student.score}</span>
+                </div>
+                <div class="student-details"><strong>Remarks:</strong> ${student.details}${actionsHTML}</div>
+            `;
+            list.appendChild(card);
+        });
+    }
+
+    async function submitAttendance() {
+        const checkboxes = document.querySelectorAll('.att-checkbox:checked');
+        if(checkboxes.length === 0) return alert("Select at least one member.");
+        const studentIds = Array.from(checkboxes).map(cb => cb.value);
+
+        try {
+            const res = await fetch(`${getUnitBaseURL()}/attendance`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ studentIds }) });
+            if (res.ok) { currentStudents = await res.json(); alert(`✅ Attendance marked successfully!`); renderStudents(); } 
+            else { alert("Failed to submit attendance."); }
+        } catch (err) { alert("Error connecting to server."); }
+    }
+
+    async function addStudent() {
+        const nameInput = document.getElementById('newStudentName'); const detailsInput = document.getElementById('newStudentDetails');
+        if (nameInput.value.trim() === "") return alert("Name is required.");
+        let details = detailsInput.value.trim() || "Added by Admin.";
+
+        try {
+            const res = await fetch(`${getUnitBaseURL()}/students`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: nameInput.value.trim(), details }) });
+            if (res.ok) { currentStudents = await res.json(); nameInput.value = ""; detailsInput.value = ""; renderStudents(); } 
+            else { alert("Failed to add student."); }
+        } catch (err) { alert("Error connecting to server."); }
+    }
+
+    async function editStudent(studentId, event) {
+        event.stopPropagation(); 
+        let student = currentStudents.find(s => s._id === studentId); if(!student) return;
+        let newName = prompt("Edit Name:", student.name); if (newName === null) return; 
+        let newDetails = prompt("Edit Remarks:", student.details); if (newDetails === null) return; 
+
+        try {
+            const res = await fetch(`${getUnitBaseURL()}/students/${studentId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newName.trim(), details: newDetails.trim() }) });
+            if (res.ok) { currentStudents = await res.json(); renderStudents(); } else { alert("Failed to edit student."); }
+        } catch (err) { alert("Error connecting to server."); }
+    }
+
+    async function deleteStudent(studentId, event) {
+        event.stopPropagation(); 
+        let student = currentStudents.find(s => s._id === studentId); if (!student) return;
+
+        if (confirm(`Delete ${student.name}?`)) {
+            try {
+                const res = await fetch(`${getUnitBaseURL()}/students/${studentId}`, { method: 'DELETE' });
+                if (res.ok) { currentStudents = await res.json(); renderStudents(); } else { alert("Failed to delete student."); }
+            } catch (err) { alert("Error connecting to server."); }
+        }
+    }
+
+    async function renderLeadership() {
+        const list = document.getElementById('leadership-list');
+        showLoader('leadership-list');
+
+        try {
+            const res = await fetch(`${getUnitBaseURL()}/students`);
+            const studentsList = await res.json();
+            list.innerHTML = "";
+
+            let sortedStudents = [...studentsList].sort((a, b) => b.score - a.score);
+            let top3 = sortedStudents.slice(0, 3);
+            if(top3.length === 0) return list.innerHTML = "<p style='grid-column: 1/-1; text-align:center;'>No data.</p>";
+
+            top3.forEach((student, index) => {
+                const card = document.createElement('div');
+                card.className = `leader-card rank-${index + 1}`;
+                let medal = index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉";
+                card.innerHTML = `
+                    <div class="medal-icon">${medal}</div>
+                    <div style="font-size: 13px; color: #777; text-transform: uppercase; margin-bottom: 5px;">Rank ${index + 1}</div>
+                    <h2 style="color: var(--primary-dark); margin-bottom: 10px; font-size: 20px;">${student.name}</h2>
+                    <div class="score-badge" style="display:inline-block; font-size: 14px; padding: 6px 15px;">Score: ${student.score}</div>
+                `;
+                list.appendChild(card);
+            });
+        } catch (err) {
+            list.innerHTML = "<p style='grid-column: 1/-1; text-align:center; color:red;'>Failed to load leadership data.</p>";
+        }
+    }
+</script>
+</body>
+</html>
