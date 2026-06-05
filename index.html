@@ -667,7 +667,7 @@
         if (isSelectionAdmin) { box.style.display = 'none'; return; }
 
         let url = `${API_URL}/top-performer`;
-        if (currentLevel === 0) { badgeTitle.innerText = "🏆 DISTRICT TOP PERFORMER"; } 
+        if (currentLevel === 0) { badgeTitle.innerText = "🏆 GLOBAL TOP PERFORMER"; } 
         else if (currentLevel === 1) { badgeTitle.innerText = "🏆 DIVISION TOP PERFORMER"; url = `${API_URL}/divisions/${selectedPath.division.id}/top-performer`; } 
         else if (currentLevel === 2) { badgeTitle.innerText = "🏆 SECTOR TOP PERFORMER"; url = `${API_URL}/divisions/${selectedPath.division.id}/sectors/${selectedPath.sector.id}/top-performer`; }
 
@@ -914,4 +914,141 @@
         }
     }
 
-    async function loadStudent
+    async function loadStudents() {
+        const list = document.getElementById('student-list');
+        showLoader('student-list');
+        try {
+            const res = await fetch(`${getUnitBaseURL()}/students`); currentStudents = await res.json(); renderStudents();
+        } catch (err) { list.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:red; font-size:15px;">Error loading data.</p>`; }
+    }
+
+    function renderStudents() {
+        const list = document.getElementById('student-list');
+        list.innerHTML = ""; 
+
+        if(currentStudents.length === 0) {
+            list.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#888; font-size:15px; margin-top:20px;">No members found. Admin must add members.</p>`;
+            return;
+        }
+
+        currentStudents.forEach(student => {
+            const card = document.createElement('div'); card.className = 'student-card';
+            card.onclick = () => card.classList.toggle('expanded');
+
+            let checkboxHTML = ""; let actionsHTML = "";
+            if (isUnitAdmin) {
+                checkboxHTML = `<input type="checkbox" class="checkbox-container att-checkbox" value="${student._id}" onclick="event.stopPropagation()" style="display:inline-block;">`;
+                actionsHTML = `
+                    <div class="action-btns">
+                        <button class="btn-small" style="background:#e0e5e2; color:#333;" onclick="editStudent('${student._id}', event)">✏️ Edit</button>
+                        <button class="btn-small btn-danger" onclick="deleteStudent('${student._id}', event)">🗑️ Delete</button>
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="student-header">
+                    <div class="student-name-box">${checkboxHTML} ${student.name}</div>
+                    <span class="score-badge">⭐ ${student.score}</span>
+                </div>
+                <div class="student-details"><strong>Remarks:</strong> ${student.details}${actionsHTML}</div>
+            `;
+            list.appendChild(card);
+        });
+    }
+
+    async function submitAttendanceMultiple(points) {
+        const checkboxes = document.querySelectorAll('.att-checkbox:checked');
+        if(checkboxes.length === 0) return alert("Select at least one member.");
+        const studentIds = Array.from(checkboxes).map(cb => cb.value);
+
+        try {
+            let latestStudents = currentStudents;
+            for (let i = 0; i < points; i++) {
+                const res = await fetch(`${getUnitBaseURL()}/attendance`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ studentIds }) 
+                });
+                if (res.ok) {
+                    latestStudents = await res.json();
+                } else {
+                    throw new Error("Failed to submit score");
+                }
+            }
+            currentStudents = latestStudents;
+            alert(`✅ +${points} Score added successfully!`);
+            renderStudents(); 
+        } catch (err) {
+            alert("Error connecting to server while adding score.");
+        }
+    }
+
+    async function addStudent() {
+        const nameInput = document.getElementById('newStudentName'); const detailsInput = document.getElementById('newStudentDetails');
+        if (nameInput.value.trim() === "") return alert("Name is required.");
+        let details = detailsInput.value.trim() || "Added by Admin.";
+
+        try {
+            const res = await fetch(`${getUnitBaseURL()}/students`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: nameInput.value.trim(), details }) });
+            if (res.ok) { currentStudents = await res.json(); nameInput.value = ""; detailsInput.value = ""; renderStudents(); } 
+            else { alert("Failed to add student."); }
+        } catch (err) { alert("Error connecting to server."); }
+    }
+
+    async function editStudent(studentId, event) {
+        event.stopPropagation(); 
+        let student = currentStudents.find(s => s._id === studentId); if(!student) return;
+        let newName = prompt("Edit Name:", student.name); if (newName === null) return; 
+        let newDetails = prompt("Edit Remarks:", student.details); if (newDetails === null) return; 
+
+        try {
+            const res = await fetch(`${getUnitBaseURL()}/students/${studentId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newName.trim(), details: newDetails.trim() }) });
+            if (res.ok) { currentStudents = await res.json(); renderStudents(); } else { alert("Failed to edit student."); }
+        } catch (err) { alert("Error connecting to server."); }
+    }
+
+    async function deleteStudent(studentId, event) {
+        event.stopPropagation(); 
+        let student = currentStudents.find(s => s._id === studentId); if (!student) return;
+
+        if (confirm(`Delete ${student.name}?`)) {
+            try {
+                const res = await fetch(`${getUnitBaseURL()}/students/${studentId}`, { method: 'DELETE' });
+                if (res.ok) { currentStudents = await res.json(); renderStudents(); } else { alert("Failed to delete student."); }
+            } catch (err) { alert("Error connecting to server."); }
+        }
+    }
+
+    async function renderLeadership() {
+        const list = document.getElementById('leadership-list');
+        showLoader('leadership-list');
+
+        try {
+            const res = await fetch(`${getUnitBaseURL()}/students`);
+            const studentsList = await res.json();
+            list.innerHTML = "";
+
+            let sortedStudents = [...studentsList].sort((a, b) => b.score - a.score);
+            let top3 = sortedStudents.slice(0, 3);
+            if(top3.length === 0) return list.innerHTML = "<p style='grid-column: 1/-1; text-align:center;'>No data.</p>";
+
+            top3.forEach((student, index) => {
+                const card = document.createElement('div');
+                card.className = `leader-card rank-${index + 1}`;
+                let medal = index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉";
+                card.innerHTML = `
+                    <div class="medal-icon">${medal}</div>
+                    <div style="font-size: 13px; color: #777; text-transform: uppercase; margin-bottom: 5px;">Rank ${index + 1}</div>
+                    <h2 style="color: var(--primary-dark); margin-bottom: 10px; font-size: 20px;">${student.name}</h2>
+                    <div class="score-badge" style="display:inline-block; font-size: 14px; padding: 6px 15px;">Score: ${student.score}</div>
+                `;
+                list.appendChild(card);
+            });
+        } catch (err) {
+            list.innerHTML = "<p style='grid-column: 1/-1; text-align:center; color:red;'>Failed to load leadership data.</p>";
+        }
+    }
+</script>
+</body>
+</html>
