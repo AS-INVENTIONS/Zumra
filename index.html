@@ -50,7 +50,7 @@
         /* WEB LAYOUT FIX: App-container now takes full width like a standard website */
         #app-container {
             width: 100%; 
-            max-width: 100%; 
+            max-width: 100%; /* Fully responsive full width */
             height: 100vh; 
             background-color: var(--bg-color);
             position: relative; 
@@ -65,13 +65,13 @@
         #app-container::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 10px; }
 
         @media (max-width: 768px) {
-            #app-container::-webkit-scrollbar { display: none; }
+            #app-container::-webkit-scrollbar { display: none; } /* Hide scrollbar on mobile */
             #app-container { -ms-overflow-style: none; scrollbar-width: none; }
         }
 
         @media (min-width: 769px) {
             .app-header { border-radius: 0; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; padding-bottom: 35px; }
-            .page-content { max-width: 1100px; margin: 0 auto; padding: 30px; }
+            .page-content { max-width: 1100px; margin: 0 auto; padding: 30px; } /* Centers content beautifully on large screens */
         }
 
         .page { display: none; padding-bottom: 30px; min-height: 100%; }
@@ -124,6 +124,7 @@
 
         .page-content { padding: 25px; }
         
+        /* GRID LAYOUT FOR DESKTOP */
         .menu-container, #student-list, #admin-passwords-list, #leadership-list { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
@@ -170,6 +171,7 @@
         .admin-section label { color:#ff8080; font-size:12px; display:block; margin-bottom:5px; }
         .admin-section input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; background: white; }
         
+        /* Dynamic Theme Overrides for Admins */
         .theme-ultra { background-color: #120202 !important; }
         .theme-ultra .app-header { background: linear-gradient(135deg, #4a0000, #7a0000) !important; border-bottom: 2px solid #ff3333; }
         .theme-ultra .bismillah, .theme-ultra h1, .theme-ultra .ssf-subtitle { color: #ff4d4d !important; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
@@ -192,6 +194,7 @@
         .rank-3 { border: 2px solid #cd7f32; }
         .medal-icon { font-size: 35px; margin-bottom: 8px; }
 
+        /* DYNAMIC CERTIFICATE/AWARD STYLE FOR TOP PERFORMER */
         #top-performer-box {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
             border: 2.5px solid var(--accent-gold);
@@ -206,6 +209,7 @@
             margin-right: auto;
         }
 
+        /* MODAL STYLES FOR INFO BUTTON */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px);
@@ -266,6 +270,7 @@
         @keyframes zoomIn { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+        /* CUSTOM PDF CONTAINER STYLING */
         .pdf-viewer-container {
             background: white; border-radius: 15px; padding: 15px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid var(--accent-gold);
@@ -276,7 +281,7 @@
             border: none; border-radius: 10px; background: #f0f4f2;
         }
         
-        /* New styling for Splash Screen Icon */
+        /* Splash Screen Icon */
         .splash-icon {
             width: 130px; 
             height: 130px; 
@@ -295,20 +300,21 @@
 
 <div id="app-container">
 
-    <!-- 0. SPLASH SCREEN (NEW ICON DISPLAY) -->
+    <!-- 0. SPLASH SCREEN (NEW ICON DISPLAY & DIGITAL TEXT) -->
     <div id="splash-page" class="page active">
-        <!-- Replaced Moon with Beautiful Golden Circle Icon -->
         <img src="https://as-inventions.github.io/Zumra/icon.png" alt="Zumra Logo" class="splash-icon">
+        <div style="font-size: 16px; color: #d4af37; letter-spacing: 5px; text-transform: uppercase; font-weight: 700; margin-bottom: -5px; animation: fadeIn 2s ease-in;">Digital</div>
         <h1 style="font-family: 'Georgia', serif; font-size: 45px; font-weight: 800; color: #d4af37; letter-spacing: 5px; margin-bottom: 10px; text-transform: uppercase; text-shadow: 0 0 15px rgba(212,175,55,0.8); animation: zoomIn 1.5s ease-out, pulse-glow 2s infinite alternate;">ZUMRA</h1>
         <p style="font-size: 15px; color: #a3c4bc; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; animation: fadeIn 2s ease-in;">Sunni Students Federation</p>
     </div>
 
-    <!-- DYNAMIC SELECTION PAGE (Home Page) - Retained Bismillah here -->
+    <!-- DYNAMIC SELECTION PAGE (Home Page) -->
     <div id="selection-page" class="page">
         <div class="app-header">
             <button id="selection-back-btn" class="back-btn" onclick="navigateBack()" style="display: none;">⬅</button>
+            <!-- New Small Logo directly opposite to info button -->
+            <img id="selection-top-logo" src="https://as-inventions.github.io/Zumra/icon.png" alt="Logo" style="position: absolute; top: 25px; left: 20px; width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid var(--accent-gold); box-shadow: 0 0 8px rgba(212,175,55,0.4); object-fit: cover;">
             <button class="info-btn" onclick="openInfo()">❔</button>
-            <!-- ﷽ Kept Only in Home Page -->
             <div class="bismillah">﷽</div>
             <h1 id="selection-title">Zumra Connect</h1>
             <p class="ssf-subtitle">Sunni Students Federation</p>
@@ -346,7 +352,7 @@
         </div>
     </div>
 
-    <!-- 1. WELCOME PAGE (UNIT DASHBOARD) - Arabic Text Added -->
+    <!-- 1. WELCOME PAGE (UNIT DASHBOARD) -->
     <div id="welcome-page" class="page">
         <div class="app-header">
             <button class="back-btn" onclick="showPage('selection-page')">⬅</button>
@@ -354,7 +360,6 @@
             
             <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 5px;">
                 <img src="https://as-inventions.github.io/Zumra/icon.png" alt="Digital Zumra" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--accent-gold); box-shadow: 0 0 10px rgba(212,175,55,0.5); margin-bottom: 10px;">
-                <!-- Updated Arabic Text -->
                 <div class="bismillah" style="font-size: 24px; line-height: 1; font-weight: bold;">ادْعُ إِلَىٰ سَبِيلِ اللَّهِ</div>
             </div>
 
@@ -382,7 +387,7 @@
         </div>
     </div>
 
-    <!-- 2. LESSONS PAGE - Arabic Text Added -->
+    <!-- 2. LESSONS PAGE -->
     <div id="lessons-page" class="page">
         <div class="app-header">
             <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
@@ -405,7 +410,7 @@
         </div>
     </div>
 
-    <!-- 3. ATTENDANCE & RECORDS PAGE - Arabic Text Added -->
+    <!-- 3. ATTENDANCE & RECORDS PAGE -->
     <div id="attendance-page" class="page">
         <div class="app-header">
             <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
@@ -449,7 +454,7 @@
         </div>
     </div>
 
-    <!-- 4. LEADERSHIP PAGE - Arabic Text Added -->
+    <!-- 4. LEADERSHIP PAGE -->
     <div id="leadership-page" class="page">
         <div class="app-header">
             <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
@@ -587,6 +592,7 @@
     async function loadSelectionPage() {
         const titleEl = document.getElementById('selection-title');
         const backBtn = document.getElementById('selection-back-btn');
+        const topLogo = document.getElementById('selection-top-logo');
         const secretBox = document.getElementById('selectionSecretBox');
         const adminControls = document.getElementById('selection-admin-controls');
         const addPassInput = document.getElementById('adminInputPass');
@@ -610,7 +616,10 @@
             applyThemeVars(PAGE_THEMES['divisions-page']);
             bismillah.classList.add('bismillah-glow'); 
             titleEl.innerText = "Zumra Connect";
+            
             backBtn.style.display = 'none';
+            if (topLogo) topLogo.style.display = 'block'; // Shows small logo only on home page
+            
             addPassInput.style.display = 'none'; 
             addNameInput.placeholder = "Division Name (Eg: Kollam Division)";
             document.getElementById('admin-warning-banner').innerText = "🚨 ULTRA DANGER ZONE 🚨";
@@ -619,7 +628,10 @@
             applyThemeVars(PAGE_THEMES['sectors-page']);
             bismillah.classList.remove('bismillah-glow'); 
             titleEl.innerText = selectedPath.division.name;
+            
             backBtn.style.display = 'flex';
+            if (topLogo) topLogo.style.display = 'none'; // Hides small logo when back button comes
+            
             addPassInput.style.display = 'block';
             addPassInput.placeholder = "Set Sector Password (Default: sec123)";
             addNameInput.placeholder = "Sector Name (Eg: Vadakkevila Sector)";
@@ -629,7 +641,10 @@
             applyThemeVars(PAGE_THEMES['units-page']);
             bismillah.classList.remove('bismillah-glow'); 
             titleEl.innerText = selectedPath.sector.name;
+            
             backBtn.style.display = 'flex';
+            if (topLogo) topLogo.style.display = 'none'; // Hides small logo when back button comes
+            
             addPassInput.style.display = 'block';
             addPassInput.placeholder = "Set Unit Password (Default: 123)";
             addNameInput.placeholder = "Unit Name (Eg: Unit 1)";
@@ -652,7 +667,7 @@
         if (isSelectionAdmin) { box.style.display = 'none'; return; }
 
         let url = `${API_URL}/top-performer`;
-        if (currentLevel === 0) { badgeTitle.innerText = "🏆 GLOBAL TOP PERFORMER"; } 
+        if (currentLevel === 0) { badgeTitle.innerText = "🏆 DISTRICT TOP PERFORMER"; } 
         else if (currentLevel === 1) { badgeTitle.innerText = "🏆 DIVISION TOP PERFORMER"; url = `${API_URL}/divisions/${selectedPath.division.id}/top-performer`; } 
         else if (currentLevel === 2) { badgeTitle.innerText = "🏆 SECTOR TOP PERFORMER"; url = `${API_URL}/divisions/${selectedPath.division.id}/sectors/${selectedPath.sector.id}/top-performer`; }
 
@@ -899,141 +914,4 @@
         }
     }
 
-    async function loadStudents() {
-        const list = document.getElementById('student-list');
-        showLoader('student-list');
-        try {
-            const res = await fetch(`${getUnitBaseURL()}/students`); currentStudents = await res.json(); renderStudents();
-        } catch (err) { list.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:red; font-size:15px;">Error loading data.</p>`; }
-    }
-
-    function renderStudents() {
-        const list = document.getElementById('student-list');
-        list.innerHTML = ""; 
-
-        if(currentStudents.length === 0) {
-            list.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#888; font-size:15px; margin-top:20px;">No members found. Admin must add members.</p>`;
-            return;
-        }
-
-        currentStudents.forEach(student => {
-            const card = document.createElement('div'); card.className = 'student-card';
-            card.onclick = () => card.classList.toggle('expanded');
-
-            let checkboxHTML = ""; let actionsHTML = "";
-            if (isUnitAdmin) {
-                checkboxHTML = `<input type="checkbox" class="checkbox-container att-checkbox" value="${student._id}" onclick="event.stopPropagation()" style="display:inline-block;">`;
-                actionsHTML = `
-                    <div class="action-btns">
-                        <button class="btn-small" style="background:#e0e5e2; color:#333;" onclick="editStudent('${student._id}', event)">✏️ Edit</button>
-                        <button class="btn-small btn-danger" onclick="deleteStudent('${student._id}', event)">🗑️ Delete</button>
-                    </div>
-                `;
-            }
-
-            card.innerHTML = `
-                <div class="student-header">
-                    <div class="student-name-box">${checkboxHTML} ${student.name}</div>
-                    <span class="score-badge">⭐ ${student.score}</span>
-                </div>
-                <div class="student-details"><strong>Remarks:</strong> ${student.details}${actionsHTML}</div>
-            `;
-            list.appendChild(card);
-        });
-    }
-
-    async function submitAttendanceMultiple(points) {
-        const checkboxes = document.querySelectorAll('.att-checkbox:checked');
-        if(checkboxes.length === 0) return alert("Select at least one member.");
-        const studentIds = Array.from(checkboxes).map(cb => cb.value);
-
-        try {
-            let latestStudents = currentStudents;
-            for (let i = 0; i < points; i++) {
-                const res = await fetch(`${getUnitBaseURL()}/attendance`, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ studentIds }) 
-                });
-                if (res.ok) {
-                    latestStudents = await res.json();
-                } else {
-                    throw new Error("Failed to submit score");
-                }
-            }
-            currentStudents = latestStudents;
-            alert(`✅ +${points} Score added successfully!`);
-            renderStudents(); 
-        } catch (err) {
-            alert("Error connecting to server while adding score.");
-        }
-    }
-
-    async function addStudent() {
-        const nameInput = document.getElementById('newStudentName'); const detailsInput = document.getElementById('newStudentDetails');
-        if (nameInput.value.trim() === "") return alert("Name is required.");
-        let details = detailsInput.value.trim() || "Added by Admin.";
-
-        try {
-            const res = await fetch(`${getUnitBaseURL()}/students`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: nameInput.value.trim(), details }) });
-            if (res.ok) { currentStudents = await res.json(); nameInput.value = ""; detailsInput.value = ""; renderStudents(); } 
-            else { alert("Failed to add student."); }
-        } catch (err) { alert("Error connecting to server."); }
-    }
-
-    async function editStudent(studentId, event) {
-        event.stopPropagation(); 
-        let student = currentStudents.find(s => s._id === studentId); if(!student) return;
-        let newName = prompt("Edit Name:", student.name); if (newName === null) return; 
-        let newDetails = prompt("Edit Remarks:", student.details); if (newDetails === null) return; 
-
-        try {
-            const res = await fetch(`${getUnitBaseURL()}/students/${studentId}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: newName.trim(), details: newDetails.trim() }) });
-            if (res.ok) { currentStudents = await res.json(); renderStudents(); } else { alert("Failed to edit student."); }
-        } catch (err) { alert("Error connecting to server."); }
-    }
-
-    async function deleteStudent(studentId, event) {
-        event.stopPropagation(); 
-        let student = currentStudents.find(s => s._id === studentId); if (!student) return;
-
-        if (confirm(`Delete ${student.name}?`)) {
-            try {
-                const res = await fetch(`${getUnitBaseURL()}/students/${studentId}`, { method: 'DELETE' });
-                if (res.ok) { currentStudents = await res.json(); renderStudents(); } else { alert("Failed to delete student."); }
-            } catch (err) { alert("Error connecting to server."); }
-        }
-    }
-
-    async function renderLeadership() {
-        const list = document.getElementById('leadership-list');
-        showLoader('leadership-list');
-
-        try {
-            const res = await fetch(`${getUnitBaseURL()}/students`);
-            const studentsList = await res.json();
-            list.innerHTML = "";
-
-            let sortedStudents = [...studentsList].sort((a, b) => b.score - a.score);
-            let top3 = sortedStudents.slice(0, 3);
-            if(top3.length === 0) return list.innerHTML = "<p style='grid-column: 1/-1; text-align:center;'>No data.</p>";
-
-            top3.forEach((student, index) => {
-                const card = document.createElement('div');
-                card.className = `leader-card rank-${index + 1}`;
-                let medal = index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉";
-                card.innerHTML = `
-                    <div class="medal-icon">${medal}</div>
-                    <div style="font-size: 13px; color: #777; text-transform: uppercase; margin-bottom: 5px;">Rank ${index + 1}</div>
-                    <h2 style="color: var(--primary-dark); margin-bottom: 10px; font-size: 20px;">${student.name}</h2>
-                    <div class="score-badge" style="display:inline-block; font-size: 14px; padding: 6px 15px;">Score: ${student.score}</div>
-                `;
-                list.appendChild(card);
-            });
-        } catch (err) {
-            list.innerHTML = "<p style='grid-column: 1/-1; text-align:center; color:red;'>Failed to load leadership data.</p>";
-        }
-    }
-</script>
-</body>
-</html>
+    async function loadStudent
