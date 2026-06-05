@@ -275,24 +275,40 @@
             width: 100%; height: 60vh; min-height: 500px;
             border: none; border-radius: 10px; background: #f0f4f2;
         }
+        
+        /* New styling for Splash Screen Icon */
+        .splash-icon {
+            width: 130px; 
+            height: 130px; 
+            border-radius: 50%; 
+            border: 4px solid #d4af37; 
+            padding: 5px; 
+            background: rgba(255, 255, 255, 0.05); 
+            box-shadow: 0 0 30px rgba(212,175,55,0.6), inset 0 0 15px rgba(212,175,55,0.3); 
+            animation: pulse-glow 2s infinite alternate, zoomIn 1s ease-out; 
+            margin-bottom: 25px; 
+            object-fit: cover;
+        }
     </style>
 </head>
 <body>
 
 <div id="app-container">
 
-    <!-- 0. SPLASH SCREEN -->
+    <!-- 0. SPLASH SCREEN (NEW ICON DISPLAY) -->
     <div id="splash-page" class="page active">
-        <div style="font-size: 50px; margin-bottom: 20px; animation: pulse-glow 2s infinite alternate; text-shadow: 0 0 15px rgba(212,175,55,0.6);">🌙</div>
+        <!-- Replaced Moon with Beautiful Golden Circle Icon -->
+        <img src="https://as-inventions.github.io/Zumra/icon.png" alt="Zumra Logo" class="splash-icon">
         <h1 style="font-family: 'Georgia', serif; font-size: 45px; font-weight: 800; color: #d4af37; letter-spacing: 5px; margin-bottom: 10px; text-transform: uppercase; text-shadow: 0 0 15px rgba(212,175,55,0.8); animation: zoomIn 1.5s ease-out, pulse-glow 2s infinite alternate;">ZUMRA</h1>
         <p style="font-size: 15px; color: #a3c4bc; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; animation: fadeIn 2s ease-in;">Sunni Students Federation</p>
     </div>
 
-    <!-- DYNAMIC SELECTION PAGE -->
+    <!-- DYNAMIC SELECTION PAGE (Home Page) - Retained Bismillah here -->
     <div id="selection-page" class="page">
         <div class="app-header">
             <button id="selection-back-btn" class="back-btn" onclick="navigateBack()" style="display: none;">⬅</button>
             <button class="info-btn" onclick="openInfo()">❔</button>
+            <!-- ﷽ Kept Only in Home Page -->
             <div class="bismillah">﷽</div>
             <h1 id="selection-title">Zumra Connect</h1>
             <p class="ssf-subtitle">Sunni Students Federation</p>
@@ -330,16 +346,16 @@
         </div>
     </div>
 
-    <!-- 1. WELCOME PAGE (UNIT DASHBOARD) -->
+    <!-- 1. WELCOME PAGE (UNIT DASHBOARD) - Arabic Text Added -->
     <div id="welcome-page" class="page">
         <div class="app-header">
             <button class="back-btn" onclick="showPage('selection-page')">⬅</button>
             <button class="info-btn" onclick="openInfo()">❔</button>
             
-            <!-- Added Digital Zumra Branding & Icon as requested -->
             <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 5px;">
-                <img src="https://as-inventions.github.io/Zumra/icon.png" alt="Digital Zumra" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--accent-gold); box-shadow: 0 0 10px rgba(212,175,55,0.5); margin-bottom: 8px;">
-                <div class="bismillah" style="font-size: 22px; line-height: 1;">﷽</div>
+                <img src="https://as-inventions.github.io/Zumra/icon.png" alt="Digital Zumra" style="width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--accent-gold); box-shadow: 0 0 10px rgba(212,175,55,0.5); margin-bottom: 10px;">
+                <!-- Updated Arabic Text -->
+                <div class="bismillah" style="font-size: 24px; line-height: 1; font-weight: bold;">ادْعُ إِلَىٰ سَبِيلِ اللَّهِ</div>
             </div>
 
             <h1 id="dashboard-unit-name">Unit Name</h1>
@@ -366,10 +382,11 @@
         </div>
     </div>
 
-    <!-- 2. LESSONS PAGE -->
+    <!-- 2. LESSONS PAGE - Arabic Text Added -->
     <div id="lessons-page" class="page">
         <div class="app-header">
             <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
+            <div class="bismillah" style="font-size: 22px; margin-bottom: 8px; font-weight: bold;">ادْعُ إِلَىٰ سَبِيلِ اللَّهِ</div>
             <h1>My Lessons</h1>
             <p class="ssf-subtitle">DIGITAL ZUMRA</p>
         </div>
@@ -388,10 +405,11 @@
         </div>
     </div>
 
-    <!-- 3. ATTENDANCE & RECORDS PAGE -->
+    <!-- 3. ATTENDANCE & RECORDS PAGE - Arabic Text Added -->
     <div id="attendance-page" class="page">
         <div class="app-header">
             <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
+            <div class="bismillah" style="font-size: 22px; margin-bottom: 8px; font-weight: bold;">ادْعُ إِلَىٰ سَبِيلِ اللَّهِ</div>
             <h1 id="page-title">Records</h1>
             <p class="ssf-subtitle">DIGITAL ZUMRA</p>
         </div>
@@ -405,7 +423,6 @@
             <div id="unit-admin-controls" class="admin-controls">
                 <div class="admin-section">
                     <h3>✔️ Mark Today's Attendance</h3>
-                    <!-- Modified: +1 and +3 Buttons added seamlessly -->
                     <div style="display: flex; gap: 10px;">
                         <button class="btn btn-primary" onclick="submitAttendanceMultiple(1)">+1 Score</button>
                         <button class="btn btn-gold" onclick="submitAttendanceMultiple(3)">+3 Score</button>
@@ -432,10 +449,11 @@
         </div>
     </div>
 
-    <!-- 4. LEADERSHIP PAGE -->
+    <!-- 4. LEADERSHIP PAGE - Arabic Text Added -->
     <div id="leadership-page" class="page">
         <div class="app-header">
             <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
+            <div class="bismillah" style="font-size: 22px; margin-bottom: 8px; font-weight: bold;">ادْعُ إِلَىٰ سَبِيلِ اللَّهِ</div>
             <h1>Leadership Board</h1>
             <p class="ssf-subtitle">DIGITAL ZUMRA</p>
         </div>
@@ -678,7 +696,6 @@
 
                 card.onclick = () => handleItemClick(item._id, item.name);
 
-                /* Modified to Islamic Moon Icon 🌙 */
                 card.innerHTML = `<div class="menu-icon">🌙</div><div class="menu-text">${item.name}</div>${deleteBtn}`;
                 list.appendChild(card);
             });
@@ -925,7 +942,6 @@
         });
     }
 
-    /* Modified Logic for +1 and +3 increments without backend change */
     async function submitAttendanceMultiple(points) {
         const checkboxes = document.querySelectorAll('.att-checkbox:checked');
         if(checkboxes.length === 0) return alert("Select at least one member.");
