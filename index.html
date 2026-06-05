@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +50,7 @@
         /* WEB LAYOUT FIX: App-container now takes full width like a standard website */
         #app-container {
             width: 100%; 
-            max-width: 100%; /* Fully responsive full width */
+            max-width: 100%; 
             height: 100vh; 
             background-color: var(--bg-color);
             position: relative; 
@@ -63,13 +65,13 @@
         #app-container::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 10px; }
 
         @media (max-width: 768px) {
-            #app-container::-webkit-scrollbar { display: none; } /* Hide scrollbar on mobile */
+            #app-container::-webkit-scrollbar { display: none; }
             #app-container { -ms-overflow-style: none; scrollbar-width: none; }
         }
 
         @media (min-width: 769px) {
             .app-header { border-radius: 0; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; padding-bottom: 35px; }
-            .page-content { max-width: 1100px; margin: 0 auto; padding: 30px; } /* Centers content beautifully on large screens */
+            .page-content { max-width: 1100px; margin: 0 auto; padding: 30px; }
         }
 
         .page { display: none; padding-bottom: 30px; min-height: 100%; }
@@ -122,7 +124,6 @@
 
         .page-content { padding: 25px; }
         
-        /* GRID LAYOUT FOR DESKTOP */
         .menu-container, #student-list, #admin-passwords-list, #leadership-list { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
@@ -169,7 +170,6 @@
         .admin-section label { color:#ff8080; font-size:12px; display:block; margin-bottom:5px; }
         .admin-section input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; outline: none; background: white; }
         
-        /* Dynamic Theme Overrides for Admins */
         .theme-ultra { background-color: #120202 !important; }
         .theme-ultra .app-header { background: linear-gradient(135deg, #4a0000, #7a0000) !important; border-bottom: 2px solid #ff3333; }
         .theme-ultra .bismillah, .theme-ultra h1, .theme-ultra .ssf-subtitle { color: #ff4d4d !important; text-shadow: 0 0 8px rgba(255,0,0,0.6); }
@@ -192,7 +192,6 @@
         .rank-3 { border: 2px solid #cd7f32; }
         .medal-icon { font-size: 35px; margin-bottom: 8px; }
 
-        /* DYNAMIC CERTIFICATE/AWARD STYLE FOR TOP PERFORMER */
         #top-performer-box {
             background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
             border: 2.5px solid var(--accent-gold);
@@ -207,7 +206,6 @@
             margin-right: auto;
         }
 
-        /* MODAL STYLES FOR INFO BUTTON */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px);
@@ -268,7 +266,6 @@
         @keyframes zoomIn { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CUSTOM PDF CONTAINER STYLING */
         .pdf-viewer-container {
             background: white; border-radius: 15px; padding: 15px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid var(--accent-gold);
@@ -338,9 +335,15 @@
         <div class="app-header">
             <button class="back-btn" onclick="showPage('selection-page')">⬅</button>
             <button class="info-btn" onclick="openInfo()">❔</button>
-            <div class="bismillah">﷽</div>
+            
+            <!-- Added Digital Zumra Branding & Icon as requested -->
+            <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; margin-bottom: 5px;">
+                <img src="https://as-inventions.github.io/Zumra/icon.png" alt="Digital Zumra" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--accent-gold); box-shadow: 0 0 10px rgba(212,175,55,0.5); margin-bottom: 8px;">
+                <div class="bismillah" style="font-size: 22px; line-height: 1;">﷽</div>
+            </div>
+
             <h1 id="dashboard-unit-name">Unit Name</h1>
-            <p class="ssf-subtitle">Sunni Students Federation</p>
+            <p class="ssf-subtitle" style="letter-spacing: 2px;">DIGITAL ZUMRA</p>
         </div>
 
         <div class="page-content">
@@ -363,23 +366,19 @@
         </div>
     </div>
 
-    <!-- 2. LESSONS PAGE (UPDATED WITH PDF EMBED VIEWER) -->
+    <!-- 2. LESSONS PAGE -->
     <div id="lessons-page" class="page">
         <div class="app-header">
             <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
             <h1>My Lessons</h1>
-            <p class="ssf-subtitle">Sunni Students Federation</p>
+            <p class="ssf-subtitle">DIGITAL ZUMRA</p>
         </div>
         <div class="page-content">
             
             <div class="pdf-viewer-container">
                 <h3 style="color: var(--primary-dark); margin-bottom: 12px; text-align: center; font-size: 18px;">📚 Study Material</h3>
-                
-                <!-- 👇 PDF LINK HERE 👇: src="YOUR_PDF_LINK.pdf" എന്നാക്കുക -->
                 <iframe src="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" title="Lesson PDF"></iframe>
-                
                 <div style="text-align: center; margin-top: 15px;">
-                    <!-- 👇 DOWNLOAD LINK HERE 👇: href="YOUR_PDF_LINK.pdf" എന്നാക്കുക -->
                     <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" target="_blank" class="btn btn-gold" style="display: inline-block; width: auto; text-decoration: none; padding: 10px 20px;">
                         📥 Download / Open Fullscreen
                     </a>
@@ -394,7 +393,7 @@
         <div class="app-header">
             <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
             <h1 id="page-title">Records</h1>
-            <p class="ssf-subtitle">Sunni Students Federation</p>
+            <p class="ssf-subtitle">DIGITAL ZUMRA</p>
         </div>
         
         <div class="page-content">
@@ -406,7 +405,11 @@
             <div id="unit-admin-controls" class="admin-controls">
                 <div class="admin-section">
                     <h3>✔️ Mark Today's Attendance</h3>
-                    <button class="btn btn-primary" onclick="submitAttendance()">Submit Attendance (+1)</button>
+                    <!-- Modified: +1 and +3 Buttons added seamlessly -->
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="submitAttendanceMultiple(1)">+1 Score</button>
+                        <button class="btn btn-gold" onclick="submitAttendanceMultiple(3)">+3 Score</button>
+                    </div>
                 </div>
                 <div class="admin-section">
                     <h3>➕ Add New Member</h3>
@@ -434,7 +437,7 @@
         <div class="app-header">
             <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
             <h1>Leadership Board</h1>
-            <p class="ssf-subtitle">Sunni Students Federation</p>
+            <p class="ssf-subtitle">DIGITAL ZUMRA</p>
         </div>
         <div class="page-content">
             <div id="leadership-list"></div>
@@ -675,7 +678,8 @@
 
                 card.onclick = () => handleItemClick(item._id, item.name);
 
-                card.innerHTML = `<div class="menu-icon">🕌</div><div class="menu-text">${item.name}</div>${deleteBtn}`;
+                /* Modified to Islamic Moon Icon 🌙 */
+                card.innerHTML = `<div class="menu-icon">🌙</div><div class="menu-text">${item.name}</div>${deleteBtn}`;
                 list.appendChild(card);
             });
         } catch (err) {
@@ -921,16 +925,32 @@
         });
     }
 
-    async function submitAttendance() {
+    /* Modified Logic for +1 and +3 increments without backend change */
+    async function submitAttendanceMultiple(points) {
         const checkboxes = document.querySelectorAll('.att-checkbox:checked');
         if(checkboxes.length === 0) return alert("Select at least one member.");
         const studentIds = Array.from(checkboxes).map(cb => cb.value);
 
         try {
-            const res = await fetch(`${getUnitBaseURL()}/attendance`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ studentIds }) });
-            if (res.ok) { currentStudents = await res.json(); alert(`✅ Attendance marked successfully!`); renderStudents(); } 
-            else { alert("Failed to submit attendance."); }
-        } catch (err) { alert("Error connecting to server."); }
+            let latestStudents = currentStudents;
+            for (let i = 0; i < points; i++) {
+                const res = await fetch(`${getUnitBaseURL()}/attendance`, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ studentIds }) 
+                });
+                if (res.ok) {
+                    latestStudents = await res.json();
+                } else {
+                    throw new Error("Failed to submit score");
+                }
+            }
+            currentStudents = latestStudents;
+            alert(`✅ +${points} Score added successfully!`);
+            renderStudents(); 
+        } catch (err) {
+            alert("Error connecting to server while adding score.");
+        }
     }
 
     async function addStudent() {
