@@ -403,14 +403,14 @@
     <div id="lessons-page" class="page">
         <div class="app-header">
             <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
-          <div class="bismillah" style="font-size: 24px; line-height: 1; font-weight: bold;">ادْعُ إِلَىٰ سَبِيلِ اللَّهِ</div>
+            <div class="bismillah" style="font-size: 24px; line-height: 1; font-weight: bold;">ادْعُ إِلَىٰ سَبِيلِ اللَّهِ</div>
             <h1>Lessons</h1>
             <p class="ssf-subtitle">DIGITAL ZUMRA</p>
         </div>
         <div class="page-content">
             <div class="pdf-viewer-container">
                 <!-- ഹെഡിംഗ് ചെറുതാക്കി കണ്ടെയ്‌നറിനുള്ളിൽ നൽകുന്നു -->
-                <h4 style="color: var(--primary-dark); margin: 10px 0; text-align: center; font-size: 16px;">📖 Essential Quran & Baiths</h4>
+                <h4 style="color: var(--primary-dark); margin: 10px 0; text-align: center; font-size: 16px;">📖 ഔദ്യോഗിക സിനബ് & ബൈത്തുകൾ</h4>
                 
                 <iframe src="https://docs.google.com/viewer?url=https://as-inventions.github.io/Zumra/Digital-Zumra-Lessons.pdf&embedded=true" title="Lesson PDF"></iframe>
             </div>
@@ -674,7 +674,7 @@
         if (isSelectionAdmin) { box.style.display = 'none'; return; }
 
         let url = `${API_URL}/top-performer`;
-        if (currentLevel === 0) { badgeTitle.innerText = "🏆 GLOBAL TOP PERFORMER"; } 
+        if (currentLevel === 0) { badgeTitle.innerText = "🏆 DISTRICT TOP PERFORMER"; } 
         else if (currentLevel === 1) { badgeTitle.innerText = "🏆 DIVISION TOP PERFORMER"; url = `${API_URL}/divisions/${selectedPath.division.id}/top-performer`; } 
         else if (currentLevel === 2) { badgeTitle.innerText = "🏆 SECTOR TOP PERFORMER"; url = `${API_URL}/divisions/${selectedPath.division.id}/sectors/${selectedPath.sector.id}/top-performer`; }
 
