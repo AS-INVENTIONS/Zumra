@@ -201,15 +201,29 @@ app.delete('/api/divisions/:id/sectors/:sectorId/units/:unitId/students/:student
     res.json(div.sectors.id(req.params.sectorId).units.id(req.params.unitId).students);
 });
 
+/* UPDATED: Supports single-request updates with customizable amount (+1, +3, -1) */
 app.post('/api/divisions/:id/sectors/:sectorId/units/:unitId/attendance', async (req, res) => {
-    const div = await Division.findById(req.params.id);
-    const unit = div.sectors.id(req.params.sectorId).units.id(req.params.unitId);
-    req.body.studentIds.forEach(sid => {
-        const student = unit.students.id(sid);
-        if (student) student.score += 1;
-    });
-    await div.save();
-    res.json(unit.students);
+    try {
+        const div = await Division.findById(req.params.id);
+        const unit = div.sectors.id(req.params.sectorId).units.id(req.params.unitId);
+        
+        // Get amount from body, default to 1 if not specified
+        const amount = req.body.amount !== undefined ? Number(req.body.amount) : 1;
+
+        req.body.studentIds.forEach(sid => {
+            const student = unit.students.id(sid);
+            if (student) {
+                student.score += amount;
+                // Prevents score from going below 0
+                if (student.score < 0) student.score = 0;
+            }
+        });
+        
+        await div.save();
+        res.json(unit.students);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 // --- SECURE TOP PERFORMER CALCULATION ON BACKEND ---
