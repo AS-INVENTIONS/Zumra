@@ -271,27 +271,27 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* CUSTOM PDF CONTAINER STYLING */
-/* PDF കണ്ടെയ്‌നർ പുതുക്കിയത് */
-.pdf-viewer-container {
-    background: white;
-    border-radius: 20px;
-    padding: 8px; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    border: 6px double var(--accent-gold); /* സ്വർണ്ണ ഡബിൾ ബോർഡർ */
-    max-width: 1000px;
-    margin: 0 auto;
-    height: 85vh; /* മൊബൈലിൽ കൂടുതൽ വലിപ്പം കിട്ടാൻ */
-    display: flex;
-    flex-direction: column;
-}
+        /* PDF കണ്ടെയ്‌നർ പുതുക്കിയത് */
+        .pdf-viewer-container {
+            background: white;
+            border-radius: 20px;
+            padding: 8px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 6px double var(--accent-gold); /* സ്വർണ്ണ ഡബിൾ ബോർഡർ */
+            max-width: 1000px;
+            margin: 0 auto;
+            height: 85vh; /* മൊബൈലിൽ കൂടുതൽ വലിപ്പം കിട്ടാൻ */
+            display: flex;
+            flex-direction: column;
+        }
 
-.pdf-viewer-container iframe {
-    flex: 1; /* ഫുൾ ഹൈറ്റിൽ കാണാൻ */
-    width: 100%;
-    border: none;
-    border-radius: 12px;
-    background: #f0f4f2;
-}
+        .pdf-viewer-container iframe {
+            flex: 1; /* ഫുൾ ഹൈറ്റിൽ കാണാൻ */
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            background: #f0f4f2;
+        }
         
         /* Splash Screen Icon */
         .splash-icon {
@@ -385,7 +385,7 @@
             <div class="menu-container">
                 <div class="menu-card" onclick="showPage('lessons-page')">
                     <div class="menu-icon">📖</div>
-                    <div class="menu-text"> Lessons</div>
+                    <div class="menu-text">Lessons</div>
                 </div>
                 <div class="menu-card" onclick="showPage('attendance-page')">
                     <div class="menu-icon">📝</div>
@@ -403,22 +403,18 @@
     <div id="lessons-page" class="page">
         <div class="app-header">
             <button class="back-btn" onclick="showPage('welcome-page')">⬅</button>
-            <div class="bismillah" style="font-size: 22px; margin-bottom: 8px; font-weight: bold;">ادْعُ إِلَىٰ سَبِيلِ اللَّهِ</div>
-            <h1> Lessons</h1>
+            <div class="bismillah" style="font-size: 22px; margin-bottom: 8px; font-weight: bold;">ادْعُ إِلَىٰ സَبِيلِ اللَّهِ</div>
+            <h1>Lessons</h1>
             <p class="ssf-subtitle">DIGITAL ZUMRA</p>
         </div>
         <div class="page-content">
-    <div class="pdf-viewer-container">
-        <!-- ഹെഡിംഗ് ചെറുതാക്കി കണ്ടെയ്‌നറിനുള്ളിൽ നൽകുന്നു -->
-        <h4 style="color: var(--primary-dark); margin: 10px 0; text-align: center; font-size: 16px;">📖 ഔദ്യോഗിക സിനബ് & ബൈത്തുകൾ</h4>
-        
-        <iframe src="https://docs.google.com/viewer?url=https://as-inventions.github.io/Zumra/Digital-Zumra-Lessons.pdf&embedded=true" title="Lesson PDF"></iframe>
-        
-        <div style="text-align: center; padding: 10px;">
-     
+            <div class="pdf-viewer-container">
+                <!-- ഹെഡിംഗ് ചെറുതാക്കി കണ്ടെയ്‌നറിനുള്ളിൽ നൽകുന്നു -->
+                <h4 style="color: var(--primary-dark); margin: 10px 0; text-align: center; font-size: 16px;">📖 ഔദ്യോഗിക സിനബ് & ബൈത്തുകൾ</h4>
+                
+                <iframe src="https://docs.google.com/viewer?url=https://as-inventions.github.io/Zumra/Digital-Zumra-Lessons.pdf&embedded=true" title="Lesson PDF"></iframe>
+            </div>
         </div>
-    </div>
-</div>
     </div>
 
     <!-- 3. ATTENDANCE & RECORDS PAGE -->
