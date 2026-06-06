@@ -435,9 +435,11 @@
             <div id="unit-admin-controls" class="admin-controls">
                 <div class="admin-section">
                     <h3>✔️ Mark Today's Attendance</h3>
+                    <!-- Modified: +1, +3, and -1 Buttons added -->
                     <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-primary" onclick="submitAttendanceMultiple(1)">+1 Score</button>
-                        <button class="btn btn-gold" onclick="submitAttendanceMultiple(3)">+3 Score</button>
+                        <button class="btn btn-primary" onclick="updateScore(1)">+1 Score</button>
+                        <button class="btn btn-gold" onclick="updateScore(3)">+3 Score</button>
+                        <button class="btn btn-danger" onclick="updateScore(-1)">-1 Score</button>
                     </div>
                 </div>
                 <div class="admin-section">
@@ -625,7 +627,7 @@
             titleEl.innerText = "Zumra Connect";
             
             backBtn.style.display = 'none';
-            if (topLogo) topLogo.style.display = 'block'; // Shows small logo only on home page
+            if (topLogo) topLogo.style.display = 'block'; 
             
             addPassInput.style.display = 'none'; 
             addNameInput.placeholder = "Division Name (Eg: Kollam Division)";
@@ -637,7 +639,7 @@
             titleEl.innerText = selectedPath.division.name;
             
             backBtn.style.display = 'flex';
-            if (topLogo) topLogo.style.display = 'none'; // Hides small logo when back button comes
+            if (topLogo) topLogo.style.display = 'none'; 
             
             addPassInput.style.display = 'block';
             addPassInput.placeholder = "Set Sector Password (Default: sec123)";
@@ -650,7 +652,7 @@
             titleEl.innerText = selectedPath.sector.name;
             
             backBtn.style.display = 'flex';
-            if (topLogo) topLogo.style.display = 'none'; // Hides small logo when back button comes
+            if (topLogo) topLogo.style.display = 'none'; 
             
             addPassInput.style.display = 'block';
             addPassInput.placeholder = "Set Unit Password (Default: 123)";
@@ -964,30 +966,29 @@
         });
     }
 
-    async function submitAttendanceMultiple(points) {
+    /* UPDATED LOGIC: Securely updates +1, +3, -1 via a single Backend Request */
+    async function updateScore(amount) {
         const checkboxes = document.querySelectorAll('.att-checkbox:checked');
         if(checkboxes.length === 0) return alert("Select at least one member.");
         const studentIds = Array.from(checkboxes).map(cb => cb.value);
 
         try {
-            let latestStudents = currentStudents;
-            for (let i = 0; i < points; i++) {
-                const res = await fetch(`${getUnitBaseURL()}/attendance`, { 
-                    method: 'POST', 
-                    headers: { 'Content-Type': 'application/json' }, 
-                    body: JSON.stringify({ studentIds }) 
-                });
-                if (res.ok) {
-                    latestStudents = await res.json();
-                } else {
-                    throw new Error("Failed to submit score");
-                }
+            const res = await fetch(`${getUnitBaseURL()}/attendance`, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify({ studentIds, amount }) 
+            });
+            
+            if (res.ok) {
+                currentStudents = await res.json();
+                let msg = amount > 0 ? `✅ +${amount} Score added successfully!` : `✅ ${amount} Score deducted successfully!`;
+                alert(msg);
+                renderStudents(); 
+            } else {
+                alert("Failed to update score.");
             }
-            currentStudents = latestStudents;
-            alert(`✅ +${points} Score added successfully!`);
-            renderStudents(); 
         } catch (err) {
-            alert("Error connecting to server while adding score.");
+            alert("Error connecting to server while updating score.");
         }
     }
 
