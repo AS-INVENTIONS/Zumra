@@ -7,7 +7,9 @@ const dns = require('dns');
 dns.setServers(['1.1.1.1', '8.8.8.8']);
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'https://as-inventions.github.io'
+}));
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI)
