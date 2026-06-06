@@ -271,15 +271,27 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         /* CUSTOM PDF CONTAINER STYLING */
-        .pdf-viewer-container {
-            background: white; border-radius: 15px; padding: 15px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 2px solid var(--accent-gold);
-            max-width: 900px; margin: 0 auto;
-        }
-        .pdf-viewer-container iframe {
-            width: 100%; height: 60vh; min-height: 500px;
-            border: none; border-radius: 10px; background: #f0f4f2;
-        }
+/* PDF കണ്ടെയ്‌നർ പുതുക്കിയത് */
+.pdf-viewer-container {
+    background: white;
+    border-radius: 20px;
+    padding: 8px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    border: 6px double var(--accent-gold); /* സ്വർണ്ണ ഡബിൾ ബോർഡർ */
+    max-width: 1000px;
+    margin: 0 auto;
+    height: 85vh; /* മൊബൈലിൽ കൂടുതൽ വലിപ്പം കിട്ടാൻ */
+    display: flex;
+    flex-direction: column;
+}
+
+.pdf-viewer-container iframe {
+    flex: 1; /* ഫുൾ ഹൈറ്റിൽ കാണാൻ */
+    width: 100%;
+    border: none;
+    border-radius: 12px;
+    background: #f0f4f2;
+}
         
         /* Splash Screen Icon */
         .splash-icon {
@@ -396,18 +408,17 @@
             <p class="ssf-subtitle">DIGITAL ZUMRA</p>
         </div>
         <div class="page-content">
-            
-<div class="pdf-viewer-container">
-    <h3 style="color: var(--primary-dark); margin-bottom: 12px; text-align: center; font-size: 18px;">📖 ഔദ്യോഗിക സിനബ് & ബൈത്തുകൾ</h3>
-    
-    <!-- Google PDF Viewer ഉപയോഗിച്ചുള്ള പുതിയ ലിങ്ക് -->
-    <iframe src="https://docs.google.com/viewer?url=https://as-inventions.github.io/Zumra/Digital-Zumra-Lessons.pdf&embedded=true" title="Lesson PDF"></iframe>
-    
-    <div style="text-align: center; margin-top: 15px;">
-
+    <div class="pdf-viewer-container">
+        <!-- ഹെഡിംഗ് ചെറുതാക്കി കണ്ടെയ്‌നറിനുള്ളിൽ നൽകുന്നു -->
+        <h4 style="color: var(--primary-dark); margin: 10px 0; text-align: center; font-size: 16px;">📖 ഔദ്യോഗിക സിനബ് & ബൈത്തുകൾ</h4>
+        
+        <iframe src="https://docs.google.com/viewer?url=https://as-inventions.github.io/Zumra/Digital-Zumra-Lessons.pdf&embedded=true" title="Lesson PDF"></iframe>
+        
+        <div style="text-align: center; padding: 10px;">
+     
+        </div>
     </div>
 </div>
-        </div>
     </div>
 
     <!-- 3. ATTENDANCE & RECORDS PAGE -->
